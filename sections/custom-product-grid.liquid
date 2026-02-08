@@ -307,13 +307,14 @@
   <div class="section-title">{{ section.settings.product_section_title }}</div>
 
   <div class="product-grid">
-    {% assign product_limit = section.settings.product_limit %}
-    {% if section.settings.product_collection != blank %}
-      {% for product in section.settings.product_collection.products limit: product_limit %}
+    {% for block in section.blocks %}
+      {% assign product = block.settings.product_item %}
+      {% if product != blank or block.settings.custom_image != blank %}
         <div class="product-card">
           <div class="image-container">
-            {% if product.featured_image != blank %}
-              {{ product.featured_image | image_url: width: 600 | image_tag: class: 'main-img', loading: 'lazy' }}
+            {% assign card_image = block.settings.custom_image | default: product.featured_image %}
+            {% if card_image != blank %}
+              {{ card_image | image_url: width: 600 | image_tag: class: 'main-img', loading: 'lazy' }}
             {% else %}
               {{ 'product-1' | placeholder_svg_tag: 'main-img' }}
             {% endif %}
@@ -389,7 +390,7 @@
             {% endfor %}
 
             <!-- Add to Cart (Static for UI, needs form for functionality) -->
-            <form method="post" action="/cart/add" class="add-to-cart-form">
+            <form method="post" action="{{ routes.cart_add_url }}" class="add-to-cart-form">
               <input type="hidden" name="id" class="variant-id-input" value="{{ product.variants.first.id }}">
               <button type="submit" class="add-to-cart-btn" style="border:none;">
                 <span class="atc-text">Add to cart</span>
@@ -398,7 +399,7 @@
             </form>
           </div>
         </div>
-      {% endfor %}
+      {% endif %}
     {% else %}
       {% comment %} Fallback for empty state {% endcomment %}
       {% for i in (1..3) %}
@@ -412,7 +413,7 @@
           </div>
         </div>
       {% endfor %}
-    {% endif %}
+    {% endfor %}
   </div>
 </div>
 
@@ -603,20 +604,29 @@
       "id": "title_color",
       "label": "Title Color",
       "default": "#000000"
-    },
+    }
+  ],
+  "blocks": [
     {
-      "type": "collection",
-      "id": "product_collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "product_limit",
-      "label": "Number of products",
-      "min": 3,
-      "max": 12,
-      "step": 1,
-      "default": 6
+      "type": "product_entry",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product_item",
+          "label": "Select Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom Image (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom Title (Optional)"
+        }
+      ]
     }
   ],
   "presets": [
