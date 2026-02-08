@@ -27,6 +27,7 @@
     text-align: left;
   }
 
+  /* Grid Layout */
   .product-grid {
     width: 100%;
     max-width: 1339px;
@@ -35,12 +36,15 @@
     gap: 20px;
   }
 
+  /* Product Card */
   .product-card {
     display: flex;
     flex-direction: column;
     position: relative;
     text-decoration: none;
     color: inherit;
+    /* Ensure stacking context for popup */
+    z-index: 1;
   }
 
   .image-container {
@@ -92,6 +96,7 @@
     text-align: left;
   }
 
+  /* Active State */
   .product-popup.active {
     display: block;
   }
@@ -190,7 +195,6 @@
     transition: background-color 300ms ease-out;
   }
 
-  /* Vertical Divider matching HTML structure */
   .option-divider {
     position: absolute;
     right: 0;
@@ -199,7 +203,6 @@
     width: 0.5px;
     background-color: #000000;
   }
-  /* Remove divider for last child */
   .color-option:last-child .option-divider {
     display: none;
   }
@@ -216,20 +219,18 @@
     z-index: 2;
     transition: color 300ms ease-out;
   }
-  /* Color Strips */
+
   .color-strip {
     position: absolute; left: 0; top: 0; height: 100%; width: 6px;
     border-right: 0.5px solid #000000; z-index: 2;
   }
 
-  /* Helper classes from grid.css */
   .blue-strip { background-color: #0D499F; }
   .black-strip { background-color: #000000; }
   .red-strip { background-color: #FF0000; }
   .grey-strip { background-color: #808080; }
   .white-strip { background-color: #FFFFFF; border: 0.5px solid #000000; border-right: 0.5px solid #000000; }
 
-  /* Selected Color State */
   .color-option.selected { background-color: #000000; }
   .color-option.selected .option-text { color: #FFFFFF; }
 
@@ -295,7 +296,7 @@
     border-top: 1.5px solid #FFFFFF; border-right: 1.5px solid #FFFFFF; transform: rotate(45deg);
   }
 
-  /* Responsive - Mobile/Tablet */
+  /* Responsive */
   @media (max-width: 1024px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); }
     .product-card img.main-img { height: auto; aspect-ratio: 433 / 444; }
@@ -306,11 +307,7 @@
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .section-title { font-size: 24px; text-align: center; }
     .product-card img.main-img { height: 186.42px; width: 100%; object-fit: cover; }
-
-    .plus-icon {
-         width: 15px; height: 15px;
-         top: 100px; left: 70%;
-    }
+    .plus-icon { width: 15px; height: 15px; top: 100px; left: 70%; }
     .vector-h { width: 6px; } .vector-v { height: 6px; }
   }
 {% endstyle %}
@@ -320,28 +317,30 @@
     <div class="section-title">{{ section.settings.product_section_title }}</div>
 
     <div class="product-grid">
-      {% assign selected_collection = collections[section.settings.collection_id] %}
-      {% if selected_collection != blank and selected_collection.products_count > 0 %}
-        {% for product in selected_collection.products limit: section.settings.products_to_show %}
-          <div class="product-card">
-            <div class="image-container">
-              {% if product.featured_image != blank %}
-                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'main-img', loading: 'lazy' }}
-              {% else %}
-                {{ 'product-1' | placeholder_svg_tag: 'main-img' }}
-              {% endif %}
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product_item %}
 
-              <!-- Plus Icon -->
-              <div class="plus-icon">
-                <div class="vector-h"></div>
-                <div class="vector-v"></div>
-              </div>
+        <div class="product-card" {{ block.shopify_attributes }}>
+          <div class="image-container">
+            {% if product != blank and product.featured_image != blank %}
+              {{ product.featured_image | image_url: width: 600 | image_tag: class: 'main-img', loading: 'lazy' }}
+            {% else %}
+              <!-- Placeholder if no product selected or no image -->
+              {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'main-img' }}
+            {% endif %}
+
+            <!-- Plus Icon -->
+            <div class="plus-icon">
+              <div class="vector-h"></div>
+              <div class="vector-v"></div>
             </div>
+          </div>
 
-            <!-- Popup -->
-            <div class="product-popup">
-              <div class="popup-close"></div>
+          <!-- Popup -->
+          <div class="product-popup">
+            <div class="popup-close"></div>
 
+            {% if product != blank %}
               <!-- Popup Main Image -->
               <img
                 class="popup-image"
@@ -356,13 +355,13 @@
               <div class="popup-price">{{ product.price | money }}</div>
               <div class="popup-desc">{{ product.description | strip_html | truncatewords: 15 }}</div>
 
-              <!-- Hidden Data -->
               <div class="product-options-data" style="display:none;">
                 <script type="application/json">
                   {{ product.variants | json }}
                 </script>
               </div>
 
+              <!-- Dynamic Option Selectors -->
               {% for option in product.options_with_values %}
                 {% assign option_name_downcase = option.name | downcase %}
                 {% assign option_position = option.position %}
@@ -375,7 +374,6 @@
                       {% for value in option.values %}
                         {% assign val_down = value | downcase %}
                         <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
-                          <!-- Color Strip with inline style fallback -->
                           <div
                             class="color-strip {{ val_down }}-strip"
                             style="background-color: {{ val_down }}; border-right: 0.5px solid #000000;"
@@ -416,46 +414,34 @@
                   <div class="atc-arrow"></div>
                 </button>
               </form>
-            </div>
+
+            {% else %}
+              <!-- Fallback if block exists but no product -->
+              <div class="popup-title">Add Product to Block</div>
+              <div class="popup-price">$0.00</div>
+              <div class="popup-desc">Click on the block in the editor to select a product.</div>
+            {% endif %}
           </div>
-        {% endfor %}
-      {% else %}
-        {% comment %} Fallback for empty state {% endcomment %}
-        {% for i in (1..3) %}
-          <div class="product-card">
-            <div class="image-container">
-              {{ 'product-' | append: i | placeholder_svg_tag: 'main-img' }}
-              <div class="plus-icon">
-                <div class="vector-h"></div>
-                <div class="vector-v"></div>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      {% endif %}
+        </div>
+      {% endfor %}
     </div>
   </div>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Helper: Format Money
     const formatMoney = (cents) => {
       return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     };
 
-    // Helper: Find Matching Variant with loose type checking and comprehensive logging
     const findVariant = (variants, selections) => {
       return variants.find((variant) => {
         return Object.keys(selections).every((key) => {
-          // Shopify variant keys are option1, option2, etc.
-          // Selections keys are option1, option2 (from data-position)
           return variant[key] === selections[key];
         });
       });
     };
 
-    // Initialize Cards
     document.querySelectorAll('.product-card').forEach((card) => {
       const variantsScript = card.querySelector('script[type="application/json"]');
       if (!variantsScript) return;
@@ -473,13 +459,10 @@
 
         if (matchedVariant) {
           if (priceEl) priceEl.innerText = formatMoney(matchedVariant.price);
-
           if (matchedVariant.featured_image && matchedVariant.featured_image.src && imgEl) {
-            // Basic image swap - can be improved with image sizing logic
             const src = matchedVariant.featured_image.src;
             if (src) imgEl.src = src;
           }
-
           if (inputEl) inputEl.value = matchedVariant.id;
 
           if (atcBtn) {
@@ -489,7 +472,6 @@
             if (atcText) atcText.innerText = matchedVariant.available ? 'Add to cart' : 'Sold Out';
           }
         } else {
-          // Variant doesn't exist (e.g. Red / XXL)
           if (atcBtn) {
             atcBtn.disabled = true;
             atcBtn.style.opacity = '0.5';
@@ -499,44 +481,26 @@
         }
       };
 
-      // Initialize selections based on pre-selected DOM elements (loop first item)
       card.querySelectorAll('.color-selector, .size-selector').forEach((selector) => {
         const position = selector.getAttribute('data-position');
-        // Find if any option is pre-selected (via liquid template logic)
-        let selectedOpt =
-          selector.querySelector('.color-option.selected') ||
-          (selector.classList.contains('size-selector') ? selector.querySelector('.size-box.selected') : null);
-
-        // For size selector, the box is selected, but we need the value.
-        // If it's the first load, the size box might just have text in it.
-        // Let's rely on finding the matching value.
-        // Simpler: Just get the first option value if nothing else info is there?
-        // Actually, for size selector, we updated the template to set size-box selected if first.
-        // We need to know WHICH value is selected.
-        // In the size-box text, we put the value.
-
         if (selector.classList.contains('size-selector')) {
           const val = selector.querySelector('.size-box .size-text').textContent.trim();
           if (val && val !== 'Choose your size') {
             selections[position] = val;
           } else {
-            // Nothing selected yet? Or get first value?
-            // Let's default to first value to match the variant initially
             const firstVal = selector.querySelector('.size-option')?.getAttribute('data-value');
             if (firstVal) selections[position] = firstVal;
           }
         } else {
-          // Color
+          const selectedOpt = selector.querySelector('.color-option.selected');
           if (selectedOpt) {
             selections[position] = selectedOpt.getAttribute('data-value');
           }
         }
       });
 
-      // Perform initial update
       updateCardState();
 
-      // Listener: Color
       card.querySelectorAll('.color-option').forEach((opt) => {
         opt.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -552,7 +516,6 @@
         });
       });
 
-      // Listener: Size Option Click
       card.querySelectorAll('.size-option').forEach((opt) => {
         opt.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -575,14 +538,12 @@
       });
     });
 
-    // Global UI Interaction (Popup Toggles)
     document.querySelectorAll('.plus-icon').forEach((icon) => {
       icon.addEventListener('click', (e) => {
         e.stopPropagation();
         const card = icon.closest('.product-card');
         const popup = card.querySelector('.product-popup');
 
-        // Close others
         document.querySelectorAll('.product-popup.active').forEach((p) => {
           if (p !== popup) p.classList.remove('active');
         });
@@ -599,7 +560,6 @@
       });
     });
 
-    // Size Dropdown Toggle
     document.querySelectorAll('.size-box').forEach((box) => {
       box.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -607,7 +567,6 @@
         const dropdown = parent.querySelector('.size-dropdown');
         const isOpen = dropdown.classList.contains('open');
 
-        // Close all other dropdowns
         document.querySelectorAll('.size-dropdown').forEach((d) => d.classList.remove('open'));
         document.querySelectorAll('.size-box').forEach((b) => b.classList.remove('open'));
 
@@ -618,13 +577,10 @@
       });
     });
 
-    // Click Outside Listener
     document.addEventListener('click', (e) => {
-      // Close Popup if clicked outside
       if (!e.target.closest('.product-popup') && !e.target.closest('.plus-icon')) {
         document.querySelectorAll('.product-popup.active').forEach((p) => p.classList.remove('active'));
       }
-      // Close Size Dropdown if clicked outside
       if (!e.target.closest('.size-selector')) {
         document.querySelectorAll('.size-dropdown.open').forEach((d) => d.classList.remove('open'));
         document.querySelectorAll('.size-box.open').forEach((b) => b.classList.remove('open'));
@@ -648,25 +604,35 @@
       "id": "title_color",
       "label": "Title Color",
       "default": "#000000"
-    },
+    }
+  ],
+  "blocks": [
     {
-      "type": "collection",
-      "id": "collection_id",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "min": 3,
-      "max": 12,
-      "step": 3,
-      "default": 6,
-      "label": "Products to show"
+      "type": "product_block",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product_item",
+          "label": "Select Product"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Custom Product Grid"
+      "name": "Custom Product Grid",
+      "blocks": [
+        {
+          "type": "product_block"
+        },
+        {
+          "type": "product_block"
+        },
+        {
+          "type": "product_block"
+        }
+      ]
     }
   ]
 }
