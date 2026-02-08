@@ -343,17 +343,24 @@
             <div class="popup-desc">{{ product.description | strip_html | truncatewords: 20 }}</div>
 
             <!-- Dynamic Options -->
+            <div class="product-options-data" style="display:none;">
+              <script type="application/json">
+                {{ product.variants | json }}
+              </script>
+            </div>
+
             {% for option in product.options_with_values %}
               {% assign option_name_downcase = option.name | downcase %}
+              {% assign option_position = option.position %}
 
               <!-- Color Selector -->
               {% if option_name_downcase == 'color' or option_name_downcase == 'colour' %}
-                <div class="color-selector">
+                <div class="color-selector" data-position="option{{ option_position }}">
                   <div class="color-label">{{ option.name }}</div>
                   <div class="color-options">
                     {% for value in option.values %}
                       {% assign val_down = value | downcase %}
-                      <div class="color-option" data-value="{{ value }}">
+                      <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
                         <!-- Color Strip -->
                         <div class="color-strip {{ val_down }}-strip"></div>
                         <span class="option-text">{{ value }}</span>
@@ -365,7 +372,7 @@
 
               <!-- Size Selector -->
               {% if option_name_downcase == 'size' %}
-                <div class="size-selector">
+                <div class="size-selector" data-position="option{{ option_position }}">
                   <div class="size-label">{{ option.name }}</div>
                   <div class="size-box">
                     <span class="size-text">Choose your size</span>
@@ -383,7 +390,7 @@
 
             <!-- Add to Cart (Static for UI, needs form for functionality) -->
             <form method="post" action="/cart/add" class="add-to-cart-form">
-              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+              <input type="hidden" name="id" class="variant-id-input" value="{{ product.variants.first.id }}">
               <button type="submit" class="add-to-cart-btn" style="border:none;">
                 <span class="atc-text">Add to cart</span>
                 <div class="atc-arrow"></div>
@@ -411,22 +418,142 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Toggle Popup
+    // Helper: Format Money (simplified)
+    const formatMoney = (cents) => {
+      return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); // Adjust currency as needed or use Shopify.formatMoney if available
+    };
+
+    // Helper: Find Matching Variant
+    const findVariant = (variants, selections) => {
+      return variants.find((variant) => {
+        return Object.keys(selections).every((key) => variant[key] === selections[key]);
+      });
+    };
+
+    // Initialize Cards
+    document.querySelectorAll('.product-card').forEach((card) => {
+      const variantsScript = card.querySelector('script[type="application/json"]');
+      if (!variantsScript) return;
+
+      const variants = JSON.parse(variantsScript.textContent);
+      const selections = {};
+
+      // Pre-fill selections with defaults (first options)
+      card.querySelectorAll('.color-selector, .size-selector').forEach((selector) => {
+        const position = selector.getAttribute('data-position');
+        // For color, find selected. For size, it might not be selected initially.
+        const selectedOpt =
+          selector.querySelector('.color-option.selected') || selector.querySelector('.size-option.selected');
+        if (selectedOpt) {
+          selections[position] = selectedOpt.getAttribute('data-value');
+        } else if (selector.classList.contains('size-selector')) {
+          // If size hasn't been picked, maybe pick the first one from DOM matching?
+          // Or leave it empty. If empty, exact match might fail.
+          // Let's force select the first size option if available?
+          // The original code didn't auto-select size.
+        }
+      });
+
+      const updateCardState = () => {
+        const matchedVariant = findVariant(variants, selections);
+        const priceEl = card.querySelector('.popup-price');
+        const imgEl = card.querySelector('.popup-image');
+        const inputEl = card.querySelector('.variant-id-input');
+        const atcBtn = card.querySelector('.add-to-cart-btn');
+        const atcText = card.querySelector('.atc-text');
+
+        if (matchedVariant) {
+          // Update Price
+          if (priceEl) priceEl.innerText = formatMoney(matchedVariant.price); // Use raw cents formatting
+
+          // Update Image (if variant has one)
+          if (matchedVariant.featured_image && matchedVariant.featured_image.src && imgEl) {
+            imgEl.src = matchedVariant.featured_image.src;
+          }
+
+          // Update Input
+          if (inputEl) inputEl.value = matchedVariant.id;
+
+          // Enable Button
+          if (atcBtn) {
+            atcBtn.style.opacity = '1';
+            atcBtn.style.pointerEvents = 'auto';
+            atcBtn.disabled = false;
+            atcText.innerText = matchedVariant.available ? 'Add to cart' : 'Sold Out';
+            if (!matchedVariant.available) atcBtn.style.opacity = '0.5';
+          }
+        } else {
+          // Variant not found
+          if (atcBtn) {
+            atcBtn.style.opacity = '0.5';
+            atcBtn.style.pointerEvents = 'none';
+            atcText.innerText = 'Unavailable';
+          }
+        }
+      };
+
+      // Event Listeners for Options
+
+      // Color
+      card.querySelectorAll('.color-option').forEach((opt) => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const parent = opt.closest('.color-options');
+          const selectorWrapper = opt.closest('.color-selector');
+          const position = selectorWrapper.getAttribute('data-position');
+          const value = opt.getAttribute('data-value');
+
+          // UI Update
+          parent.querySelectorAll('.color-option').forEach((o) => o.classList.remove('selected'));
+          opt.classList.add('selected');
+
+          // State Update
+          selections[position] = value;
+          updateCardState();
+        });
+      });
+
+      // Size
+      card.querySelectorAll('.size-option').forEach((opt) => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const value = opt.getAttribute('data-value');
+          const wrapper = opt.closest('.size-selector');
+          const position = wrapper.getAttribute('data-position');
+
+          const box = wrapper.querySelector('.size-box');
+          const text = box.querySelector('.size-text');
+          const dropdown = wrapper.querySelector('.size-dropdown');
+
+          // UI Update
+          text.textContent = value;
+          box.classList.add('selected');
+          dropdown.classList.remove('open');
+          box.classList.remove('open');
+
+          // State Update
+          selections[position] = value;
+          updateCardState();
+        });
+      });
+
+      // Initial state update not strictly needed if Liquid handles initial render,
+      // but good to sync JS state if we auto-selected defaults.
+    });
+
+    // Existing Popup Logic (Preserved)
     document.querySelectorAll('.plus-icon').forEach((icon) => {
       icon.addEventListener('click', (e) => {
         e.stopPropagation();
         const card = icon.closest('.product-card');
         const popup = card.querySelector('.product-popup');
-
         if (popup) {
-          // Close others
           document.querySelectorAll('.product-popup').forEach((p) => p.classList.remove('active'));
           popup.classList.toggle('active');
         }
       });
     });
 
-    // Close Popup
     document.querySelectorAll('.popup-close').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -434,25 +561,13 @@
       });
     });
 
-    // Click Outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.product-popup') && !e.target.closest('.plus-icon')) {
         document.querySelectorAll('.product-popup').forEach((p) => p.classList.remove('active'));
       }
     });
 
-    // Color Selection
-    document.querySelectorAll('.color-option').forEach((opt) => {
-      opt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const parent = opt.closest('.color-options');
-        parent.querySelectorAll('.color-option').forEach((o) => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        // Logic to update variant ID would go here
-      });
-    });
-
-    // Size Selector
+    // Size Dropdown Toggle (Preserved)
     document.querySelectorAll('.size-box').forEach((box) => {
       box.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -460,23 +575,6 @@
         const dropdown = parent.querySelector('.size-dropdown');
         dropdown.classList.toggle('open');
         box.classList.toggle('open');
-      });
-    });
-
-    document.querySelectorAll('.size-option').forEach((opt) => {
-      opt.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const val = opt.getAttribute('data-value');
-        const parent = opt.closest('.size-selector');
-        const box = parent.querySelector('.size-box');
-        const text = box.querySelector('.size-text');
-        const dropdown = parent.querySelector('.size-dropdown');
-
-        text.textContent = val;
-        box.classList.add('selected');
-        dropdown.classList.remove('open');
-        box.classList.remove('open');
-        // Logic to update variant ID would go here
       });
     });
 
