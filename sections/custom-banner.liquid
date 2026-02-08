@@ -1,87 +1,258 @@
-{% style %} /* Fonts import (if not already in theme) */ @import
-url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Jost:wght@400;500&family=Lustria&display=swap');
+{% style %}
+  /* Fonts import (if not already in theme) */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Jost:wght@400;500&family=Lustria&display=swap');
 
-.custom-banner-section * { box-sizing: border-box; margin: 0; padding: 0; }
+  .custom-banner-section * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+  }
 
-.banner-wrapper { width: 100%; max-width: 1440px; margin: 0 auto; background-color: #FFFFFF; display: flex;
-flex-direction: column; position: relative; overflow: hidden; }
+  .banner-wrapper {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+  }
 
-/* --- ROW 1: Top Bar --- */ .row-top { width: 100%; height: 64px; display: flex; align-items: center; justify-content:
-space-between; /* Replaces fixed large gap */ padding: {{ section.settings.top_bar_padding_y }}px
-{{ section.settings.top_bar_padding_x }}px; /* 10px 50px default */ background-color: {{ section.settings.top_bar_bg }};
-}
+  /* --- ROW 1: Top Bar --- */
+  .row-top {
+      width: 100%;
+      /* Height scales with width, capped at 64px */
+      height: min(64px, 4.44vw);
+      min-height: 40px; /* Minimum accessible height */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* Padding scales, capped at settings */
+      padding: min({{ section.settings.top_bar_padding_y }}px, 0.7vw) min({{ section.settings.top_bar_padding_x }}px, 3.47vw);
+      background-color: {{ section.settings.top_bar_bg }};
+  }
 
-.brand-text { font-family: 'Lustria', serif; font-weight: 400; font-size: {{ section.settings.brand_size }}px;
-line-height: 100%; color: {{ section.settings.brand_color }}; white-space: nowrap; text-transform: uppercase; }
+  .brand-text {
+      font-family: 'Lustria', serif;
+      font-weight: 400;
+      /* Font size scales, capped at settings */
+      font-size: min({{ section.settings.brand_size }}px, calc({{ section.settings.brand_size }} / 1440 * 100vw));
+      line-height: 100%;
+      color: {{ section.settings.brand_color }};
+      white-space: nowrap;
+      text-transform: uppercase;
+  }
 
-.text-item { font-family: 'Jost', sans-serif; font-weight: 400; font-size: {{ section.settings.center_text_size }}px;
-text-align: center; color: {{ section.settings.center_text_color }}; display: flex; align-items: center;
-justify-content: center; /* Hide on small screens if needed, strictly scalable for now */ }
+  .text-item {
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: min({{ section.settings.center_text_size }}px, calc({{ section.settings.center_text_size }} / 1440 * 100vw));
+      text-align: center;
+      color: {{ section.settings.center_text_color }};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
 
-.btn-item { width: 207px; height: 44px; background-color: {{ section.settings.top_btn_bg }}; position: relative;
-display: block; text-decoration: none; flex-shrink: 0; /* Prevent squishing */ }
+  .btn-item {
+      /* Width/Height scale, capped at desktop */
+      width: min(207px, 14.37vw);
+      height: min(44px, 3.05vw);
+      background-color: {{ section.settings.top_btn_bg }};
+      position: relative;
+      display: block;
+      text-decoration: none;
+      flex-shrink: 0;
+  }
 
-/* ... button internals remain same ... */ .btn-item .line { position: absolute; left: 0; top: 0; width: 1px; height:
-44px; background-color: {{ section.settings.top_btn_text_color }}; }
+  .btn-item .line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: {{ section.settings.top_btn_text_color }};
+  }
 
-.btn-item .label { position: absolute; width: 100%; height: 100%; left: 0; top: 0; padding-left: 20px; /* Adjust for
-line */ font-family: 'Jost', sans-serif; font-weight: 400; font-size: 16px; line-height: 44px; text-align: center;
-text-transform: uppercase; color: {{ section.settings.top_btn_text_color }}; display: flex; align-items: center;
-justify-content: center; }
+  .btn-item .label {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      padding-left: 10%; /* % based padding */
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: min(16px, 1.11vw); /* Scales with container */
+      display: flex; /* Centering fix */
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      color: {{ section.settings.top_btn_text_color }};
+  }
 
-.btn-item .arrow { position: absolute; width: 24px; height: 0px; right: 20px; /* Position from right instead of fixed
-left */ top: 50%; border-top: 1.5px solid {{ section.settings.top_btn_text_color }}; }
+  .btn-item .arrow {
+      position: absolute;
+      width: 12%; /* Relative width */
+      height: 0px;
+      right: 10%;
+      top: 50%;
+      border-top: 1.5px solid {{ section.settings.top_btn_text_color }};
+  }
 
-.btn-item .arrow::after { content: ''; position: absolute; right: 0; top: -4px; width: 6px; height: 6px; border-top:
-1.5px solid {{ section.settings.top_btn_text_color }}; border-right: 1.5px solid
-{{ section.settings.top_btn_text_color }}; transform: rotate(45deg); }
+  .btn-item .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 6px;
+      height: 6px;
+      border-top: 1.5px solid {{ section.settings.top_btn_text_color }};
+      border-right: 1.5px solid {{ section.settings.top_btn_text_color }};
+      transform: rotate(45deg);
+  }
 
-/* --- ROW 2: Image Composition --- */ .row-middle { width: 100%; aspect-ratio: 1440 / 780; /* fluid height based on
-width */ height: auto; position: relative; }
+  /* --- ROW 2: Image Composition --- */
+  .row-middle {
+      width: 100%;
+      aspect-ratio: 1440 / 780;
+      position: relative;
+  }
 
-.banner-img { width: 100%; height: auto; aspect-ratio: 1440 / 390; display: block; object-fit: cover; }
+  .banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
 
-/* Using percentages for absolute positioning to maintain structure on resize */ .frame-2 { position: absolute; width:
-61.8%; /* 890 / 1440 */ height: auto; aspect-ratio: 890 / 402; top: 48.46%; /* 378 / 780 */ left: 38.19%; /* 550 / 1440
-*/ object-fit: contain; z-index: 5; }
+  .frame-2 {
+      position: absolute;
+      width: 61.8%; /* 890px */
+      height: auto;
+      top: 48.46%; /* 378px */
+      left: 38.19%; /* 550px */
+      object-fit: contain;
+      z-index: 5;
+  }
 
-.gift-guide-text { position: absolute; left: 4.65%; /* 67 / 1440 */ top: 54.48%; /* 425 / 780 */ width: 32%; /* Approx
-fit */ font-family: 'Jost', sans-serif; font-weight: 500; font-size: clamp(24px, 4.8vw,
-{{ section.settings.main_title_size }}px); /* Responsive font size */ line-height: 100%; color:
-{{ section.settings.main_title_color }}; z-index: 10; }
+  .gift-guide-text {
+      position: absolute;
+      left: 4.65%; /* 67px */
+      top: 54.48%; /* 425px */
+      width: 32%; /* 459px */
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      /* Max 70px (or user setting), scales with vw */
+      font-size: min({{ section.settings.main_title_size }}px, calc({{ section.settings.main_title_size }} / 1440 * 100vw));
+      line-height: 100%;
+      color: {{ section.settings.main_title_color }};
+      z-index: 10;
+  }
 
-.description-text { position: absolute; left: 4.65%; top: 69.87%; /* 545 / 780 */ width: 33.5%; /* 483 / 1440 */
-font-family: 'Jost', sans-serif; font-weight: 400; font-size: clamp(14px, 1.4vw,
-{{ section.settings.description_size }}px); line-height: 140%; color: {{ section.settings.description_color }}; z-index:
-10; }
+  .description-text {
+      position: absolute;
+      left: 4.65%;
+      top: 69.87%; /* 545px */
+      width: 33.54%; /* 483px */
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: min({{ section.settings.description_size }}px, calc({{ section.settings.description_size }} / 1440 * 100vw));
+      line-height: 140%;
+      color: {{ section.settings.description_color }};
+      z-index: 10;
+  }
 
-.shop-btn { position: absolute; left: 4.65%; top: 87.05%; /* 679 / 780 */ width: 220px; /* Keep button fixed width
-mostly, or scale? user said structure same. Buttons usually fixed. */ height: 50px; background-color:
-{{ section.settings.shop_btn_bg }}; display: block; text-decoration: none; z-index: 10; } /* Mobile tweak for button if
-screen is too small */ @media (max-width: 600px) { .shop-btn { width: 160px; height: 40px; } }
+  .shop-btn {
+      position: absolute;
+      left: 4.65%;
+      top: 87.05%; /* 679px */
+      width: 15.27%; /* 220px */
+      height: 6.41%; /* 50px of 780px (relative to parent height) */
+      background-color: {{ section.settings.shop_btn_bg }};
+      display: block;
+      text-decoration: none;
+      z-index: 10;
+  }
 
-.shop-btn .line { position: absolute; left: 0; top: 0; width: 1px; height: 100%; background-color:
-{{ section.settings.shop_btn_color }}; }
+  .shop-btn .line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: {{ section.settings.shop_btn_color }};
+  }
 
-.shop-btn .label { position: absolute; width: 100%; height: 100%; left: 0; top: 0; display: flex; align-items: center;
-justify-content: center; font-family: 'Jost', sans-serif; font-weight: 400; font-size: 16px; text-transform: uppercase;
-color: {{ section.settings.shop_btn_color }}; padding-right: 30px; /* Space for arrow */ }
+  .shop-btn .label {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-right: 15%; /* Space for arrow */
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: min(16px, 1.11vw);
+      text-transform: uppercase;
+      color: {{ section.settings.shop_btn_color }};
+  }
 
-.shop-btn .arrow { position: absolute; width: 25.5px; height: 0px; right: 20px; top: 50%; border-top: 1.5px solid
-{{ section.settings.shop_btn_color }}; }
+  .shop-btn .arrow {
+      position: absolute;
+      width: 11.6%; /* 25.5px / 220px */
+      height: 0px;
+      right: 10%;
+      top: 50%;
+      border-top: 1.5px solid {{ section.settings.shop_btn_color }};
+  }
 
-.shop-btn .arrow::after { content: ''; position: absolute; right: 0; top: -4px; width: 6px; height: 6px; border-top:
-1.5px solid {{ section.settings.shop_btn_color }}; border-right: 1.5px solid {{ section.settings.shop_btn_color }};
-transform: rotate(45deg); }
+  .shop-btn .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 6px;
+      height: 6px;
+      border-top: 1.5px solid {{ section.settings.shop_btn_color }};
+      border-right: 1.5px solid {{ section.settings.shop_btn_color }};
+      transform: rotate(45deg);
+  }
 
-/* --- ROW 3: Bottom Bar --- */ .row-bottom { width: 100%; height: 34px; display: flex; align-items: center;
-justify-content: center; padding: 5px 20px; background-color: {{ section.settings.bottom_bar_bg }}; }
+  /* --- ROW 3: Bottom Bar --- */
+  .row-bottom {
+      width: 100%;
+      height: min(34px, 2.36vw);
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: {{ section.settings.bottom_bar_bg }};
+  }
 
-.sustain-text { width: 100%; text-align: center; font-family: 'Jost', sans-serif; font-weight: 400; font-size:
-clamp(10px, 1.1vw, {{ section.settings.sustain_font_size }}px); color: {{ section.settings.sustain_text_color }};
-white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } /* Responsive Utilities */ @media (max-width: 1024px)
-{ .row-top { gap: 20px; } .text-item { display: none; } /* Hide center text on smaller screens if squished */ } @media
-(max-width: 768px) { .banner-wrapper { height: auto; } .frame-2 { width: 80%; left: 10%; top: 40%; } }
+  .sustain-text {
+      width: 100%;
+      text-align: center;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: min({{ section.settings.sustain_font_size }}px, calc({{ section.settings.sustain_font_size }} / 1440 * 100vw));
+      color: {{ section.settings.sustain_text_color }};
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+
+  /* Final safeguard for very small devices */
+  @media (max-width: 480px) {
+    .text-item { display: none; }
+    .btn-item { width: 40%; }
+    .btn-item .label { font-size: 10px; }
+    .row-top { gap: 10px; }
+  }
+{% endstyle %}
 
 <div class="custom-banner-section">
   <div class="banner-wrapper">
