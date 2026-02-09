@@ -43,9 +43,9 @@
           "type": "product_block",
           "settings": {
             "product_item": "classic-leather-jacket",
-            "icon_top": 50,
-            "icon_left": 50,
-            "icon_zoom": 1
+            "icon_top": 14,
+            "icon_left": 66,
+            "icon_zoom": 0.6
           }
         },
         "product_block_MfPjBH": {
