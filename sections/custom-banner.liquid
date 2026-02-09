@@ -319,7 +319,8 @@
   .mobile-brand-text {
       position: absolute;
       top: 23px;
-      left: 112px;
+      left: 50%;
+      transform: translateX(-50%);
       width: 151.44px;
       height: 19px;
       font-family: 'Jost', sans-serif;
@@ -439,7 +440,8 @@
       position: absolute;
       width: 197px;
       height: 30px;
-      left: 88.78px;
+      left: 50%;
+      transform: translateX(-50%);
       top: 49px;
       font-family: 'Jost', sans-serif;
       font-weight: 500;
@@ -453,7 +455,8 @@
       position: absolute;
       width: 340px;
       height: 42px;
-      left: 16.78px;
+      left: 50%;
+      transform: translateX(-50%);
       top: 103px;
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -468,7 +471,8 @@
       position: absolute;
       width: 193px;
       height: 45px;
-      left: 90.78px;
+      left: 50%;
+      transform: translateX(-50%);
       top: 337px;
       background-color: {{ section.settings.shop_btn_bg }};
       text-decoration: none;
@@ -685,9 +689,7 @@
       {% endif %}
 
       <div class="mobile-gift-guide-text">{{ section.settings.main_title }}</div>
-      <div class="mobile-description-text">
-        {{ section.settings.description }}
-      </div>
+      <div class="mobile-description-text">{{ section.settings.description | split: '.' | first }}.</div>
 
       <a href="#" class="mobile-shop-btn">
         <span class="label">{{ section.settings.shop_btn_text }}</span>
