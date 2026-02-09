@@ -557,6 +557,14 @@
       if (!variantsScript) return;
 
       const variants = JSON.parse(variantsScript.textContent);
+
+      // --- DEBUGGING DATA ---
+      console.group('Product Data Debug: ' + (variants[0] ? variants[0].name : 'Unknown Product'));
+      console.log('All Variants:', variants);
+      console.log('Raw Options Script Content:', variantsScript.textContent);
+      console.groupEnd();
+      // ---------------------
+
       const selections = {};
 
       const updateCardState = () => {
