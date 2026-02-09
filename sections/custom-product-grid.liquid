@@ -626,7 +626,7 @@
           selections[position] = value;
           updateCardState();
         });
-
+      });
 
       // Intercept Add to Cart for Gift Logic
       const form = card.querySelector('.add-to-cart-form');
@@ -636,38 +636,36 @@
 
           const variantId = form.querySelector('.variant-id-input').value;
           const errorMsg = card.querySelector('.atc-error-message');
-          if(errorMsg) errorMsg.style.display = 'none';
+          if (errorMsg) errorMsg.style.display = 'none';
 
           // --- DEBUG START ---
-          console.group("Gift Logic Debug");
-          console.log("Main Product Variant ID:", variantId);
-          console.log("Win Gift Variant ID:", window.giftVariantId);
+          console.group('Gift Logic Debug');
+          console.log('Main Product Variant ID:', variantId);
+          console.log('Win Gift Variant ID:', window.giftVariantId);
 
           // Get normalized values
-          const values = Object.values(selections).map(v => String(v).trim().toLowerCase());
-          console.log("Selected Options (Normalized):", values);
+          const values = Object.values(selections).map((v) => String(v).trim().toLowerCase());
+          console.log('Selected Options (Normalized):', values);
 
-          const hasBlack = values.some(v => v === 'black');
-          const hasMedium = values.some(v => v === 'medium' || v === 'm');
+          const hasBlack = values.some((v) => v === 'black');
+          const hasMedium = values.some((v) => v === 'medium' || v === 'm');
 
-          console.log("Has Black:", hasBlack);
-          console.log("Has Medium:", hasMedium);
+          console.log('Has Black:', hasBlack);
+          console.log('Has Medium:', hasMedium);
           // --- DEBUG END ---
 
-          let itemsToAdd = [
-            { id: parseInt(variantId), quantity: 1 }
-          ];
+          let itemsToAdd = [{ id: parseInt(variantId), quantity: 1 }];
 
           // If condition met and gift product exists
           if (hasBlack && hasMedium) {
-             if (window.giftVariantId && window.giftVariantId !== null) {
-                itemsToAdd.push({ id: window.giftVariantId, quantity: 1 });
-                console.log("Bonus item SHOULD be added.");
-             } else {
-                console.warn("Condition met but Gift Variant ID is null/invalid.");
-             }
+            if (window.giftVariantId && window.giftVariantId !== null) {
+              itemsToAdd.push({ id: window.giftVariantId, quantity: 1 });
+              console.log('Bonus item SHOULD be added.');
+            } else {
+              console.warn('Condition met but Gift Variant ID is null/invalid.');
+            }
           } else {
-             console.log("Condition NOT met.");
+            console.log('Condition NOT met.');
           }
           console.groupEnd();
 
@@ -675,30 +673,29 @@
           fetch(window.Shopify.routes.root + 'cart/add.js', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ items: itemsToAdd })
+            body: JSON.stringify({ items: itemsToAdd }),
           })
-          .then(response => {
-             return response.json().then(data => {
-               if (response.ok) {
-                 window.location.href = '/cart';
-               } else {
-                 console.error('Error adding to cart:', data);
-                 if(errorMsg) {
-                   errorMsg.innerText = data.description || 'Error adding to cart';
-                   errorMsg.style.display = 'block';
-                 }
-               }
-             });
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+            .then((response) => {
+              return response.json().then((data) => {
+                if (response.ok) {
+                  window.location.href = '/cart';
+                } else {
+                  console.error('Error adding to cart:', data);
+                  if (errorMsg) {
+                    errorMsg.innerText = data.description || 'Error adding to cart';
+                    errorMsg.style.display = 'block';
+                  }
+                }
+              });
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
         });
       }
     });
-
 
     document.querySelectorAll('.plus-icon').forEach((icon) => {
       icon.addEventListener('click', (e) => {
