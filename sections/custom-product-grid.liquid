@@ -466,6 +466,16 @@
                         <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
                           {% assign swatch = value.swatch %}
                           {% assign variant_image = value.variant.featured_media | default: value.variant.image %}
+
+                          {% if variant_image == blank %}
+                            {% for variant in product.variants %}
+                              {% if variant.options contains value and variant.featured_media %}
+                                {% assign variant_image = variant.featured_media %}
+                                {% break %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+
                           <div
                             class="color-strip"
                             style="
