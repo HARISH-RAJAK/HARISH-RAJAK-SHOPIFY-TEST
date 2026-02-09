@@ -675,14 +675,6 @@
 
     <!-- ROW 2: Main Content -->
     <div class="mobile-row-middle">
-      {% if section.settings.banner_image != blank %}
-        {{
-          section.settings.banner_image
-          | image_url: width: 700
-          | image_tag: class: 'mobile-banner-img', loading: 'lazy'
-        }}
-      {% endif %}
-
       <!-- Frame 2 Mobile (Positioned per user spec) -->
       {% if section.settings.overlay_image != blank %}
         {{
