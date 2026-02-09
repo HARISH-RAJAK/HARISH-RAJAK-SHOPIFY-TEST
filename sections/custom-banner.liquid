@@ -416,23 +416,27 @@
       position: absolute;
       width: 686px;
       height: 264px;
-      top: 157px;
-      left: -140px;
+      /* Dynamic positioning from schema */
+      top: {{ section.settings.mobile_img_pos_y }}px;
+      left: {{ section.settings.mobile_img_pos_x }}px;
       object-fit: cover;
-      opacity: 1;
-      transform: rotate(0deg);
+      opacity: {{ section.settings.mobile_img_opacity }};
+      /* Dynamic scale/zoom */
+      transform: scale({{ section.settings.mobile_img_scale }}) rotate(0deg);
       max-width: none !important;
   }
   .frame-2-mobile {
       position: absolute;
       width: 686px;
       height: 264px;
-      top: 157px;
-      left: -140px;
+      /* Dynamic positioning from schema */
+      top: {{ section.settings.mobile_img_pos_y }}px;
+      left: {{ section.settings.mobile_img_pos_x }}px;
       object-fit: contain;
       z-index: 5;
-      opacity: 1;
-      transform: rotate(0deg);
+      opacity: {{ section.settings.mobile_img_opacity }};
+      /* Dynamic scale/zoom */
+      transform: scale({{ section.settings.mobile_img_scale }}) rotate(0deg);
       max-width: none !important;
   }
 
@@ -440,8 +444,7 @@
       position: absolute;
       width: 197px;
       height: 30px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 88.78px;
       top: 49px;
       font-family: 'Jost', sans-serif;
       font-weight: 500;
@@ -455,8 +458,7 @@
       position: absolute;
       width: 340px;
       height: 42px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 16.78px;
       top: 103px;
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -680,12 +682,9 @@
     <!-- ROW 2: Main Content -->
     <div class="mobile-row-middle">
       <!-- Frame 2 Mobile (Positioned per user spec) -->
-      {% if section.settings.banner_image != blank %}
-        {{
-          section.settings.banner_image
-          | image_url: width: 700
-          | image_tag: class: 'frame-2-mobile', loading: 'lazy'
-        }}
+      {% assign mobile_img = section.settings.mobile_banner_image | default: section.settings.banner_image %}
+      {% if mobile_img != blank %}
+        {{ mobile_img | image_url: width: 700 | image_tag: class: 'frame-2-mobile', loading: 'lazy' }}
       {% endif %}
 
       <div class="mobile-gift-guide-text">{{ section.settings.main_title }}</div>
@@ -875,6 +874,53 @@
       "type": "image_picker",
       "id": "overlay_image",
       "label": "Overlay Graphic (Frame 2)"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Banner Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_banner_image",
+      "label": "Mobile Image (Optional - Overrides Desktop)"
+    },
+    {
+      "type": "range",
+      "id": "mobile_img_scale",
+      "label": "Mobile Image Scale (Zoom)",
+      "min": 0.5,
+      "max": 2.0,
+      "step": 0.1,
+      "default": 1.0
+    },
+    {
+      "type": "range",
+      "id": "mobile_img_pos_x",
+      "label": "Mobile Image X Position (Left)",
+      "min": -500,
+      "max": 500,
+      "step": 5,
+      "unit": "px",
+      "default": -140
+    },
+    {
+      "type": "range",
+      "id": "mobile_img_pos_y",
+      "label": "Mobile Image Y Position (Top)",
+      "min": 0,
+      "max": 500,
+      "step": 5,
+      "unit": "px",
+      "default": 157
+    },
+    {
+      "type": "range",
+      "id": "mobile_img_opacity",
+      "label": "Mobile Image Opacity",
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.1,
+      "default": 1.0
     },
     {
       "type": "text",
