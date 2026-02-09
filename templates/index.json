@@ -25,18 +25,18 @@
           "type": "product_block",
           "settings": {
             "product_item": "blue-silk-tuxedo",
-            "icon_top": 50,
-            "icon_left": 50,
-            "icon_zoom": 1
+            "icon_top": 48,
+            "icon_left": 80,
+            "icon_zoom": 0.7
           }
         },
         "product_block_AEArM8": {
           "type": "product_block",
           "settings": {
             "product_item": "chequered-red-shirt",
-            "icon_top": 50,
-            "icon_left": 50,
-            "icon_zoom": 1
+            "icon_top": 13,
+            "icon_left": 58,
+            "icon_zoom": 0.7
           }
         },
         "product_block_iGyq7m": {
