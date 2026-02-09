@@ -462,8 +462,19 @@
                         {% assign val_down = value | downcase %}
                         <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
                           <div
-                            class="color-strip {{ val_down }}-strip"
-                            style="background-color: {{ val_down }}; border-right: 0.5px solid #000000;"
+                            {% assign swatch = value.swatch %}
+                            <div
+                            class="color-strip"
+                            style="
+                              {% if swatch.image %}
+                                background-image: url({{ swatch.image | image_url: width: 40 }}); background-size: cover;
+                              {% elsif swatch.color %}
+                                background-color: rgb({{ swatch.color.rgb }});
+                              {% else %}
+                                background-color: {{ val_down | replace: ' ', '' }};
+                              {% endif %}
+                              border-right: 0.5px solid #000000;
+                            "
                           ></div>
                           <span class="option-text">{{ value }}</span>
                           <div class="option-divider"></div>
