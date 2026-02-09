@@ -680,9 +680,9 @@
     <!-- ROW 2: Main Content -->
     <div class="mobile-row-middle">
       <!-- Frame 2 Mobile (Positioned per user spec) -->
-      {% if section.settings.overlay_image != blank %}
+      {% if section.settings.banner_image != blank %}
         {{
-          section.settings.overlay_image
+          section.settings.banner_image
           | image_url: width: 700
           | image_tag: class: 'frame-2-mobile', loading: 'lazy'
         }}
