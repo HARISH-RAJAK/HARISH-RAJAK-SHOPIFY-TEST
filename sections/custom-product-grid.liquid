@@ -388,6 +388,10 @@
   }
 {% endstyle %}
 
+<script>
+  window.giftVariantId = {{ section.settings.gift_product.selected_or_first_available_variant.id | default: 'null' }};
+</script>
+
 <div class="custom-grid-section">
   <div class="product-section">
     <div class="section-title">{{ section.settings.product_section_title }}</div>
@@ -497,6 +501,10 @@
                   <div class="atc-arrow"></div>
                 </button>
               </form>
+              <div
+                class="atc-error-message"
+                style="color: red; font-size: 12px; display: none; text-align: center; margin-top: 5px;"
+              ></div>
 
             {% else %}
               <!-- Fallback if block exists but no product -->
@@ -618,7 +626,65 @@
           selections[position] = value;
           updateCardState();
         });
+            selections[position] = value;
+          updateCardState();
+        });
       });
+
+      // Intercept Add to Cart for Gift Logic
+      const form = card.querySelector('.add-to-cart-form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const variantId = form.querySelector('.variant-id-input').value;
+          const errorMsg = card.querySelector('.atc-error-message');
+          if(errorMsg) errorMsg.style.display = 'none';
+
+          // Check for "Black" and "Medium"
+          // We convert all selection values to lowercase for easier comparison
+          const values = Object.values(selections).map(v => v.toString().toLowerCase());
+          const hasBlack = values.includes('black');
+          const hasMedium = values.includes('medium') || values.includes('m');
+
+          let itemsToAdd = [
+            { id: parseInt(variantId), quantity: 1 }
+          ];
+
+          // If condition met and gift product exists
+          if (hasBlack && hasMedium && window.giftVariantId) {
+            itemsToAdd.push({ id: window.giftVariantId, quantity: 1 });
+            console.log("Bonus item added: Soft Winter Jacket");
+          }
+
+          // AJAX Add to Cart
+          fetch(window.Shopify.routes.root + 'cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ items: itemsToAdd })
+          })
+          .then(response => {
+             return response.json().then(data => {
+               if (response.ok) {
+                 // Success: Redirect to cart or refresh
+                 window.location.href = '/cart';
+               } else {
+                 console.error('Error adding to cart:', data);
+                 if(errorMsg) {
+                   errorMsg.innerText = data.description || 'Error adding to cart';
+                   errorMsg.style.display = 'block';
+                 }
+               }
+             });
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+        });
+      }
+    });
     });
 
     document.querySelectorAll('.plus-icon').forEach((icon) => {
@@ -741,6 +807,15 @@
       "id": "popup_price_color",
       "label": "Popup Price Color",
       "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Gift Settings"
+    },
+    {
+      "type": "product",
+      "id": "gift_product",
+      "label": "Gift Product (e.g. Soft Winter Jacket)"
     }
   ],
   "blocks": [
