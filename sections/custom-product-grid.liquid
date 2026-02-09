@@ -449,19 +449,12 @@
               </div>
 
               <!-- Dynamic Option Selectors -->
-              <!-- Dynamic Option Selectors -->
               {% for option in product.options_with_values %}
                 {% assign option_name_downcase = option.name | downcase %}
                 {% assign option_position = option.position %}
 
-                {% assign is_color = false %}
-                {% assign swatch_count = option.values | map: 'swatch' | compact | size %}
-                {% if option_name_downcase == 'color' or option_name_downcase == 'colour' or swatch_count > 0 %}
-                  {% assign is_color = true %}
-                {% endif %}
-
-                {% if is_color %}
-                  <!-- Color Selector -->
+                <!-- Color Selector -->
+                {% if option_name_downcase == 'color' or option_name_downcase == 'colour' %}
                   <div class="color-selector" data-position="option{{ option_position }}">
                     <div class="color-label">{{ option.name }}</div>
                     <div class="color-options">
@@ -469,11 +462,14 @@
                         {% assign val_down = value | downcase %}
                         <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
                           {% assign swatch = value.swatch %}
+                          {% assign variant_image = value.variant.featured_media | default: value.variant.image %}
                           <div
                             class="color-strip"
                             style="
                               {% if swatch.image %}
                                 background-image: url({{ swatch.image | image_url: width: 40 }}); background-size: cover;
+                              {% elsif variant_image %}
+                                background-image: url({{ variant_image | image_url: width: 40 }}); background-size: cover;
                               {% elsif swatch.color %}
                                 background-color: rgb({{ swatch.color.rgb }});
                               {% else %}
@@ -488,8 +484,10 @@
                       {% endfor %}
                     </div>
                   </div>
-                {% else %}
-                  <!-- General Selector (Size, Material, etc.) - Dropdown Style -->
+                {% endif %}
+
+                <!-- Size Selector -->
+                {% if option_name_downcase == 'size' %}
                   <div class="size-selector" data-position="option{{ option_position }}">
                     <div class="size-label">{{ option.name }}</div>
                     <div class="size-box {% if forloop.first %}selected{% endif %}">
