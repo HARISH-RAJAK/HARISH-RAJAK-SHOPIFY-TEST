@@ -18,7 +18,7 @@
             "product_item": "black-leather-bag",
             "icon_top": 49,
             "icon_left": 56,
-            "icon_zoom": 0.7
+            "icon_zoom": 0.5
           }
         },
         "product_block_fLBpWb": {
@@ -27,7 +27,7 @@
             "product_item": "blue-silk-tuxedo",
             "icon_top": 48,
             "icon_left": 80,
-            "icon_zoom": 0.7
+            "icon_zoom": 0.5
           }
         },
         "product_block_AEArM8": {
@@ -36,7 +36,7 @@
             "product_item": "chequered-red-shirt",
             "icon_top": 13,
             "icon_left": 58,
-            "icon_zoom": 0.7
+            "icon_zoom": 0.5
           }
         },
         "product_block_iGyq7m": {
@@ -45,16 +45,16 @@
             "product_item": "classic-leather-jacket",
             "icon_top": 14,
             "icon_left": 66,
-            "icon_zoom": 0.6
+            "icon_zoom": 0.5
           }
         },
         "product_block_MfPjBH": {
           "type": "product_block",
           "settings": {
             "product_item": "classic-varsity-top",
-            "icon_top": 50,
-            "icon_left": 50,
-            "icon_zoom": 1
+            "icon_top": 22,
+            "icon_left": 45,
+            "icon_zoom": 0.5
           }
         },
         "product_block_a3KLVh": {
