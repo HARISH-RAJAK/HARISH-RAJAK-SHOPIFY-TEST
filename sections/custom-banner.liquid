@@ -430,7 +430,11 @@
   .choose-gift-btn {
       width: 244px;
       height: 44px;
-      background-color: {{ section.settings.top_btn_bg | default: '#FFF544' }};
+      /* Slide Fill Effect: Black (left) | Yellow (right) */
+      background: linear-gradient(to right, #000000 50%, {{ section.settings.top_btn_bg | default: '#FFF544' }} 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -438,6 +442,10 @@
       cursor: pointer;
       text-decoration: none;
   }
+  .choose-gift-btn:hover {
+      background-position: left bottom;
+  }
+
   .btn-text {
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -447,7 +455,12 @@
       text-transform: uppercase;
       text-align: center;
       border: none;
+      transition: color 0.5s ease-out;
   }
+  .choose-gift-btn:hover .btn-text {
+      color: #FFFFFF;
+  }
+
   .btn-arrow-mobile {
       width: 28.29px;
       height: 0px;
@@ -455,7 +468,12 @@
       position: absolute;
       left: 189.78px;
       top: 21.55px;
+      transition: border-color 0.5s ease-out;
   }
+  .choose-gift-btn:hover .btn-arrow-mobile {
+      border-top: 1.5px solid #FFFFFF;
+  }
+
   .btn-arrow-mobile::after {
       content: '';
       position: absolute;
@@ -466,6 +484,11 @@
       border-top: 1.5px solid {{ section.settings.top_btn_text_color }};
       border-right: 1.5px solid {{ section.settings.top_btn_text_color }};
       transform: rotate(45deg);
+      transition: border-color 0.5s ease-out;
+  }
+  .choose-gift-btn:hover .btn-arrow-mobile::after {
+      border-top: 1.5px solid #FFFFFF;
+      border-right: 1.5px solid #FFFFFF;
   }
 
   .mobile-row-middle {
@@ -540,7 +563,11 @@
       left: 50%;
       transform: translateX(-50%);
       top: 337px;
-      background-color: {{ section.settings.shop_btn_bg }};
+      /* Slide Fill Effect: Yellow (left) | Black (right) */
+      background: linear-gradient(to right, #FFF544 50%, {{ section.settings.shop_btn_bg }} 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
       text-decoration: none;
       display: flex;
       align-items: center;
@@ -549,6 +576,10 @@
       gap: 15px;
       z-index: 10;
   }
+  .mobile-shop-btn:hover {
+      background-position: left bottom;
+  }
+
   .mobile-shop-btn .label {
       font-family: 'Jost', sans-serif;
       font-weight: 400;
@@ -557,14 +588,24 @@
       color: {{ section.settings.shop_btn_color }};
       text-transform: uppercase;
       text-align: center;
+      transition: color 0.5s ease-out;
   }
+  .mobile-shop-btn:hover .label {
+      color: #000000;
+  }
+
   .mobile-shop-btn .arrow {
       display: block;
       width: 24px;
       height: 0px;
       border-top: 1.5px solid {{ section.settings.shop_btn_color }};
       position: relative;
+      transition: border-color 0.5s ease-out;
   }
+  .mobile-shop-btn:hover .arrow {
+      border-top: 1.5px solid #000000;
+  }
+
   .mobile-shop-btn .arrow::after {
       content: '';
       position: absolute;
@@ -575,6 +616,11 @@
       border-top: 1.5px solid {{ section.settings.shop_btn_color }};
       border-right: 1.5px solid {{ section.settings.shop_btn_color }};
       transform: rotate(45deg);
+      transition: border-color 0.5s ease-out;
+  }
+  .mobile-shop-btn:hover .arrow::after {
+      border-top: 1.5px solid #000000;
+      border-right: 1.5px solid #000000;
   }
 
   .mobile-row-bottom {
