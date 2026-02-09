@@ -837,7 +837,7 @@
       "label": "Mobile Image X Position (Left)",
       "min": -500,
       "max": 500,
-      "step": 5,
+      "step": 10,
       "unit": "px",
       "default": -140
     },
@@ -847,7 +847,7 @@
       "label": "Mobile Image Y Position (Top)",
       "min": 0,
       "max": 500,
-      "step": 5,
+      "step": 10,
       "unit": "px",
       "default": 157
     },
@@ -973,56 +973,6 @@
     }
   }
 
-  function toggleProductPopup() {
-    const popup = document.getElementById('mobileProductPopup');
-    if (popup) popup.classList.toggle('active');
-  }
-
-  function toggleSizeDropdown(event) {
-    event.stopPropagation();
-    const dropdown = document.querySelector('.size-dropdown');
-    const box = document.querySelector('.size-box');
-    if (dropdown && box) {
-      dropdown.classList.toggle('open');
-      box.classList.toggle('open');
-    }
-  }
-
-  function selectSize(element) {
-    const text = document.querySelector('.size-text');
-    const dropdown = document.querySelector('.size-dropdown');
-    const box = document.querySelector('.size-box');
-    if (text && element) {
-      text.textContent = element.textContent;
-    }
-    if (dropdown) dropdown.classList.remove('open');
-    if (box) box.classList.remove('open');
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Basic color selection visualization
-    const colorOptions = document.querySelectorAll('.color-option');
-    colorOptions.forEach((opt) => {
-      opt.addEventListener('click', () => {
-        colorOptions.forEach((o) => o.classList.remove('selected'));
-        opt.classList.add('selected');
-      });
-    });
-
-    // Close size dropdown on outside click
-    document.addEventListener('click', (e) => {
-      const sizeBox = document.querySelector('.size-box');
-      const sizeDropdown = document.querySelector('.size-dropdown');
-      if (sizeBox && sizeDropdown && !sizeBox.contains(e.target)) {
-        sizeDropdown.classList.remove('open');
-        sizeBox.classList.remove('open');
-      }
-    });
-
-    // Expose functions globally if needed
-    window.toggleMobileMenu = toggleMobileMenu;
-    window.toggleProductPopup = toggleProductPopup;
-    window.toggleSizeDropdown = toggleSizeDropdown;
-    window.selectSize = selectSize;
-  });
+  // Expose function globally
+  window.toggleMobileMenu = toggleMobileMenu;
 {% endjavascript %}
