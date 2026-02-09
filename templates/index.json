@@ -11,12 +11,133 @@
   "sections": {
     "custom_product_grid_xJ8Afr": {
       "type": "custom-product-grid",
+      "blocks": {
+        "product_block_GKcXJC": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "dark-winter-jacket"
+          }
+        },
+        "product_block_eVaw89": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "silk-summer-top"
+          }
+        },
+        "product_block_6zB7bF": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "red-sports-tee"
+          }
+        },
+        "product_block_9F3pgx": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "olive-green-jacket"
+          }
+        },
+        "product_block_3akELU": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "ocean-blue-shirt"
+          }
+        },
+        "product_block_R3G84R": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "navy-sport-jacket"
+          }
+        },
+        "product_block_n7eKQz": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "longsleeve-cotton-top"
+          }
+        },
+        "product_block_xdHrX8": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "led-high-tops"
+          }
+        },
+        "product_block_QRTc9e": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "floral-white-top"
+          }
+        },
+        "product_block_a3KLVh": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "dark-denim-top"
+          }
+        },
+        "product_block_MfPjBH": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "classic-varsity-top"
+          }
+        },
+        "product_block_iGyq7m": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "classic-leather-jacket"
+          }
+        },
+        "product_block_AEArM8": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "chequered-red-shirt"
+          }
+        },
+        "product_block_fLBpWb": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "blue-silk-tuxedo"
+          }
+        },
+        "product_block_hwhfQN": {
+          "type": "product_block",
+          "settings": {
+            "product_item": ""
+          }
+        },
+        "product_block_aqErRU": {
+          "type": "product_block",
+          "settings": {
+            "product_item": ""
+          }
+        },
+        "product_block_j93JBL": {
+          "type": "product_block",
+          "settings": {
+            "product_item": "black-leather-bag"
+          }
+        }
+      },
+      "block_order": [
+        "product_block_GKcXJC",
+        "product_block_eVaw89",
+        "product_block_6zB7bF",
+        "product_block_9F3pgx",
+        "product_block_3akELU",
+        "product_block_R3G84R",
+        "product_block_n7eKQz",
+        "product_block_xdHrX8",
+        "product_block_QRTc9e",
+        "product_block_a3KLVh",
+        "product_block_MfPjBH",
+        "product_block_iGyq7m",
+        "product_block_AEArM8",
+        "product_block_fLBpWb",
+        "product_block_hwhfQN",
+        "product_block_aqErRU",
+        "product_block_j93JBL"
+      ],
       "name": "Custom Product Grid",
       "settings": {
         "product_section_title": "Tisso vison in the wild",
-        "title_color": "#000000",
-        "product_collection": "",
-        "product_limit": 6
+        "title_color": "#000000"
       }
     }
   },
