@@ -700,68 +700,6 @@
     <div class="mobile-row-bottom">
       <div class="mobile-sustain-text">{{ section.settings.sustain_text }}</div>
     </div>
-
-    <!-- Mobile Product Popup (Static/Preview) -->
-    <div class="mobile-popup" id="mobileProductPopup">
-      <div class="mp-close-icon" onclick="toggleProductPopup()"></div>
-
-      <div class="mp-image-container">
-        {% if section.settings.popup_product_image != blank %}
-          {{
-            section.settings.popup_product_image
-            | image_url: width: 240
-            | image_tag: loading: 'lazy', width: 120, height: 140
-          }}
-        {% else %}
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-        {% endif %}
-      </div>
-
-      <div class="mp-title">{{ section.settings.popup_product_title }}</div>
-      <div class="mp-price">{{ section.settings.popup_product_price }}</div>
-      <div class="mp-desc">
-        {{ section.settings.popup_product_desc }}
-      </div>
-
-      <!-- Color Selector -->
-      <div class="color-selector">
-        <div class="color-label">Color</div>
-        <div class="color-options">
-          <div class="color-option">
-            <div class="color-strip blue-strip"></div>
-            <span class="option-text">Blue</span>
-            <div class="option-divider"></div>
-          </div>
-          <div class="color-option black-option">
-            <div class="color-strip black-strip"></div>
-            <div class="option-divider-left"></div>
-            <span class="option-text">Black</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Size Selector -->
-      <div class="size-selector">
-        <div class="size-label">Size</div>
-        <div class="size-box" onclick="toggleSizeDropdown(event)">
-          <span class="size-text">Choose your size</span>
-          <div class="size-divider"></div>
-          <div class="size-arrow"></div>
-        </div>
-        <div class="size-dropdown">
-          <div class="size-option" onclick="selectSize(this)">S</div>
-          <div class="size-option" onclick="selectSize(this)">M</div>
-          <div class="size-option" onclick="selectSize(this)">XS</div>
-          <div class="size-option" onclick="selectSize(this)">L</div>
-          <div class="size-option" onclick="selectSize(this)">XL</div>
-        </div>
-      </div>
-
-      <div class="mp-atc-btn">
-        <span>ADD TO CART</span>
-        <div class="arrow-right"></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -1015,33 +953,6 @@
       "step": 1,
       "unit": "px",
       "default": 16
-    },
-    {
-      "type": "header",
-      "content": "Mobile Product Popup"
-    },
-    {
-      "type": "image_picker",
-      "id": "popup_product_image",
-      "label": "Product Image"
-    },
-    {
-      "type": "text",
-      "id": "popup_product_title",
-      "label": "Product Title",
-      "default": "Orange Wide Leg"
-    },
-    {
-      "type": "text",
-      "id": "popup_product_price",
-      "label": "Product Price",
-      "default": "980,00€"
-    },
-    {
-      "type": "textarea",
-      "id": "popup_product_desc",
-      "label": "Product Description",
-      "default": "This one-piece swimsuit is crafted from jersey featuring an allover micro Monogram motif in relief."
     }
   ],
   "presets": [
