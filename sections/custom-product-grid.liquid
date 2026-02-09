@@ -446,9 +446,6 @@
                 <script type="application/json">
                   {{ product.variants | json }}
                 </script>
-                <script type="application/json" class="options-json">
-                  {{ product.options_with_values | json }}
-                </script>
               </div>
 
               <!-- Dynamic Option Selectors -->
@@ -568,15 +565,6 @@
       if (!variantsScript) return;
 
       const variants = JSON.parse(variantsScript.textContent);
-      const optionsScript = card.querySelector('.options-json');
-      const optionsData = optionsScript ? JSON.parse(optionsScript.textContent) : 'No Options Data';
-
-      // --- DEBUGGING DATA ---
-      console.group('Product Data Debug: ' + (variants[0] ? variants[0].name : 'Unknown Product'));
-      console.log('All Variants:', variants);
-      console.log('Options Data (Swatches check here):', optionsData);
-      console.groupEnd();
-      // ---------------------
 
       const selections = {};
 
