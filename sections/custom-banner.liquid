@@ -66,11 +66,18 @@
   .btn-item {
       width: min(207px, 14.37vw);
       height: min(44px, 3.05vw);
-      background-color: {{ section.settings.top_btn_bg }};
+      /* Slide Fill Effect: Black (left) | Yellow (right) */
+      background: linear-gradient(to right, #000000 50%, {{ section.settings.top_btn_bg }} 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
       position: relative;
       display: block;
       text-decoration: none;
       flex-shrink: 0;
+  }
+  .btn-item:hover {
+      background-position: left bottom;
   }
 
   .btn-item .line {
@@ -80,6 +87,10 @@
       width: 1px;
       height: 100%;
       background-color: {{ section.settings.top_btn_text_color }};
+      transition: background-color 0.5s ease-out;
+  }
+  .btn-item:hover .line {
+      background-color: #FFFFFF;
   }
 
   .btn-item .label {
@@ -100,6 +111,10 @@
       white-space: nowrap;
       overflow: hidden;
       color: {{ section.settings.top_btn_text_color }};
+      transition: color 0.5s ease-out;
+  }
+  .btn-item:hover .label {
+      color: #FFFFFF;
   }
 
   .btn-item .arrow {
@@ -109,6 +124,10 @@
       right: 8%;
       top: 50%;
       border-top: 1.5px solid {{ section.settings.top_btn_text_color }};
+      transition: border-color 0.5s ease-out;
+  }
+  .btn-item:hover .arrow {
+      border-top: 1.5px solid #FFFFFF;
   }
 
   .btn-item .arrow::after {
@@ -121,7 +140,14 @@
       border-top: 1.5px solid {{ section.settings.top_btn_text_color }};
       border-right: 1.5px solid {{ section.settings.top_btn_text_color }};
       transform: rotate(45deg);
+      transition: border-color 0.5s ease-out;
   }
+  .btn-item:hover .arrow::after {
+      border-top: 1.5px solid #FFFFFF;
+      border-right: 1.5px solid #FFFFFF;
+  }
+
+
 
   /* --- ROW 2: Image Composition --- */
   .row-middle {
@@ -182,10 +208,17 @@
       top: 87.05%;
       width: 15.27%;
       height: 6.41%;
-      background-color: {{ section.settings.shop_btn_bg }};
+      /* Slide Fill Effect: Yellow (left) | Black (right) */
+      background: linear-gradient(to right, #FFF544 50%, {{ section.settings.shop_btn_bg }} 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
       display: block;
       text-decoration: none;
       z-index: 10;
+  }
+  .shop-btn:hover {
+      background-position: left bottom;
   }
 
   .shop-btn .line {
@@ -195,6 +228,10 @@
       width: 1px;
       height: 100%;
       background-color: {{ section.settings.shop_btn_color }};
+      transition: background-color 0.5s ease-out;
+  }
+  .shop-btn:hover .line {
+      background-color: #000000;
   }
 
   .shop-btn .label {
@@ -212,6 +249,10 @@
       font-size: min(16px, 1.11vw);
       text-transform: uppercase;
       color: {{ section.settings.shop_btn_color }};
+      transition: color 0.5s ease-out;
+  }
+  .shop-btn:hover .label {
+      color: #000000;
   }
 
   .shop-btn .arrow {
@@ -221,6 +262,27 @@
       right: 10%;
       top: 50%;
       border-top: 1.5px solid {{ section.settings.shop_btn_color }};
+      transition: border-color 0.5s ease-out;
+  }
+  .shop-btn:hover .arrow {
+      border-top: 1.5px solid #000000;
+  }
+
+  .shop-btn .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 6px;
+      height: 6px;
+      border-top: 1.5px solid {{ section.settings.shop_btn_color }};
+      border-right: 1.5px solid {{ section.settings.shop_btn_color }};
+      transform: rotate(45deg);
+      transition: border-color 0.5s ease-out;
+  }
+  .shop-btn:hover .arrow::after {
+      border-top: 1.5px solid #000000;
+      border-right: 1.5px solid #000000;
   }
 
   .shop-btn .arrow::after {
