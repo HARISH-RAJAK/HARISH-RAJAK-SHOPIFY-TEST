@@ -449,21 +449,27 @@
               </div>
 
               <!-- Dynamic Option Selectors -->
+              <!-- Dynamic Option Selectors -->
               {% for option in product.options_with_values %}
                 {% assign option_name_downcase = option.name | downcase %}
                 {% assign option_position = option.position %}
 
-                <!-- Color Selector -->
-                {% if option_name_downcase == 'color' or option_name_downcase == 'colour' %}
+                {% assign is_color = false %}
+                {% assign swatch_count = option.values | map: 'swatch' | compact | size %}
+                {% if option_name_downcase == 'color' or option_name_downcase == 'colour' or swatch_count > 0 %}
+                  {% assign is_color = true %}
+                {% endif %}
+
+                {% if is_color %}
+                  <!-- Color Selector -->
                   <div class="color-selector" data-position="option{{ option_position }}">
                     <div class="color-label">{{ option.name }}</div>
                     <div class="color-options">
                       {% for value in option.values %}
                         {% assign val_down = value | downcase %}
                         <div class="color-option {% if forloop.first %}selected{% endif %}" data-value="{{ value }}">
+                          {% assign swatch = value.swatch %}
                           <div
-                            {% assign swatch = value.swatch %}
-                            <div
                             class="color-strip"
                             style="
                               {% if swatch.image %}
@@ -482,15 +488,17 @@
                       {% endfor %}
                     </div>
                   </div>
-                {% endif %}
-
-                <!-- Size Selector -->
-                {% if option_name_downcase == 'size' %}
+                {% else %}
+                  <!-- General Selector (Size, Material, etc.) - Dropdown Style -->
                   <div class="size-selector" data-position="option{{ option_position }}">
                     <div class="size-label">{{ option.name }}</div>
                     <div class="size-box {% if forloop.first %}selected{% endif %}">
                       <span class="size-text">
-                        {%- if forloop.first %}{{ option.values.first }}{% else %}Choose your size{% endif -%}
+                        {%- if forloop.first -%}
+                          {{- option.values.first -}}
+                        {%- else -%}
+                          Choose {{ option.name | downcase -}}
+                        {%- endif -%}
                       </span>
                       <div class="size-divider"></div>
                       <div class="size-arrow"></div>
