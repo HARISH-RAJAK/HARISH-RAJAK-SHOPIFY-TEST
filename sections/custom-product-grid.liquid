@@ -641,21 +641,38 @@
           const errorMsg = card.querySelector('.atc-error-message');
           if(errorMsg) errorMsg.style.display = 'none';
 
-          // Check for "Black" and "Medium"
-          // We convert all selection values to lowercase for easier comparison
-          const values = Object.values(selections).map(v => v.toString().toLowerCase());
-          const hasBlack = values.includes('black');
-          const hasMedium = values.includes('medium') || values.includes('m');
+          // --- DEBUG START ---
+          console.group("Gift Logic Debug");
+          console.log("Main Product Variant ID:", variantId);
+          console.log("Win Gift Variant ID:", window.giftVariantId);
+
+          // Get normalized values
+          const values = Object.values(selections).map(v => String(v).trim().toLowerCase());
+          console.log("Selected Options (Normalized):", values);
+
+          const hasBlack = values.some(v => v === 'black');
+          const hasMedium = values.some(v => v === 'medium' || v === 'm');
+
+          console.log("Has Black:", hasBlack);
+          console.log("Has Medium:", hasMedium);
+          // --- DEBUG END ---
 
           let itemsToAdd = [
             { id: parseInt(variantId), quantity: 1 }
           ];
 
           // If condition met and gift product exists
-          if (hasBlack && hasMedium && window.giftVariantId) {
-            itemsToAdd.push({ id: window.giftVariantId, quantity: 1 });
-            console.log("Bonus item added: Soft Winter Jacket");
+          if (hasBlack && hasMedium) {
+             if (window.giftVariantId && window.giftVariantId !== null) {
+                itemsToAdd.push({ id: window.giftVariantId, quantity: 1 });
+                console.log("Bonus item SHOULD be added.");
+             } else {
+                console.warn("Condition met but Gift Variant ID is null/invalid.");
+             }
+          } else {
+             console.log("Condition NOT met.");
           }
+          console.groupEnd();
 
           // AJAX Add to Cart
           fetch(window.Shopify.routes.root + 'cart/add.js', {
@@ -668,7 +685,6 @@
           .then(response => {
              return response.json().then(data => {
                if (response.ok) {
-                 // Success: Redirect to cart or refresh
                  window.location.href = '/cart';
                } else {
                  console.error('Error adding to cart:', data);
