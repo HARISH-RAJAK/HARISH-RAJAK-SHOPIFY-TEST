@@ -83,22 +83,27 @@
 
   /* POPUP STYLES */
   .product-popup {
-    position: absolute;
+    position: fixed;
     width: 311px;
     height: 447px;
-    background: #FFFFFF;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    background: {{ section.settings.popup_bg_color }};
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    display: none;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     text-align: left;
   }
 
   /* Active State */
   .product-popup.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
   }
 
   .popup-close {
@@ -306,10 +311,79 @@
   @media (max-width: 600px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
     .section-title { font-size: 24px; text-align: center; }
-    /* Mobile Dimensions: ~169 width (via grid) * 186.42 height */
     .product-card img.main-img { height: 186.42px; width: 100%; object-fit: cover; }
     .plus-icon { width: 15px; height: 15px; top: 100px; left: 70%; }
     .vector-h { width: 6px; } .vector-v { height: 6px; }
+
+    /* Mobile Popup Overrides */
+    .product-popup {
+      width: 375.44px; /* Matches mobile.css */
+      height: 520px; /* Matches mobile.css */
+      max-width: 90vw; /* Ensure it fits on small screens */
+      max-height: 90vh; /* Safety constraint */
+      border-radius: 0;
+    }
+
+    .popup-close {
+        width: 18px;
+        height: 18px;
+        top: 32.5px;
+        left: 16px;
+    }
+    .popup-close::before, .popup-close::after {
+        height: 2px;
+        background-color: #000000;
+        width: 18px;
+    }
+
+    .popup-image {
+        top: 49px;
+        left: 16px;
+        width: 115px;
+        height: 125px;
+    }
+
+    .popup-title {
+        top: 49px;
+        left: 145px;
+        /* properties from mp-title */
+        width: 136px;
+        height: 19px;
+    }
+
+    .popup-price {
+        top: 90px;
+        left: 145px;
+        width: 64px;
+        height: 19px;
+    }
+
+    .popup-desc {
+        top: 122px;
+        left: 145px;
+        width: 146px;
+        height: 52px;
+        font-size: 12px;
+    }
+
+    .color-selector {
+        top: 186px;
+        left: 20px;
+        width: 271px;
+    }
+
+    .size-selector {
+        top: 262px;
+        left: 20px;
+        width: 271px;
+    }
+
+    .add-to-cart-btn {
+        top: 377px;
+        left: 20px;
+        width: 271px;
+        height: 45px;
+    }
   }
 {% endstyle %}
 
@@ -331,7 +405,14 @@
             {% endif %}
 
             <!-- Plus Icon -->
-            <div class="plus-icon">
+            <div
+              class="plus-icon"
+              style="
+                top: {{ block.settings.icon_top }}%;
+                left: {{ block.settings.icon_left }}%;
+                transform: scale({{ block.settings.icon_zoom }});
+              "
+            >
               <div class="vector-h"></div>
               <div class="vector-v"></div>
             </div>
@@ -601,9 +682,63 @@
       "default": "Tisso vison in the wild"
     },
     {
+      "type": "header",
+      "content": "Icon Settings"
+    },
+    {
+      "type": "range",
+      "id": "plus_icon_size",
+      "min": 15,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Plus Icon Size",
+      "default": 22
+    },
+    {
+      "type": "color",
+      "id": "plus_icon_bg_color",
+      "label": "Icon Background Color",
+      "default": "#F8F8F8"
+    },
+    {
+      "type": "color",
+      "id": "plus_icon_border_color",
+      "label": "Icon Border Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "plus_icon_line_color",
+      "label": "Icon Line Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Color Settings"
+    },
+    {
       "type": "color",
       "id": "title_color",
-      "label": "Title Color",
+      "label": "Section Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "popup_bg_color",
+      "label": "Popup Background Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "popup_text_color",
+      "label": "Popup Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "popup_price_color",
+      "label": "Popup Price Color",
       "default": "#000000"
     }
   ],
@@ -616,6 +751,39 @@
           "type": "product",
           "id": "product_item",
           "label": "Select Product"
+        },
+        {
+          "type": "header",
+          "content": "Plus Icon Settings"
+        },
+        {
+          "type": "range",
+          "id": "icon_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical Position (Top %)",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "icon_left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal Position (Left %)",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "icon_zoom",
+          "min": 0.5,
+          "max": 2.0,
+          "step": 0.1,
+          "label": "Icon Zoom (Scale)",
+          "default": 1.0
         }
       ]
     }
